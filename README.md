@@ -209,7 +209,7 @@ Or push a tag like `v0.0.1` to trigger GitHub Action auto-publish.
 
 **Nirmal Samaranayaka**  
 📧 [nirmal.fullstack@gmail.com](mailto:nirmal.fullstack@gmail.com)  
-💼 [GitHub: nirmal-fullstack](https://github.com/NirmalSamaranayaka)
+💼 [GitHub: NirmalSamaranayaka](https://github.com/NirmalSamaranayaka)
 
 ---
 
