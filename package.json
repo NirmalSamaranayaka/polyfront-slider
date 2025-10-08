@@ -1,0 +1,53 @@
+{
+  "name": "polyfront-slider",
+  "version": "0.0.1",
+  "description": "Polished, accessible TypeScript Web Component slider: discrete arrays or min/max/step, auto-step, missing-step disabling, blocked intervals, min distance, range/vertical/RTL, ARIA, form-associated. Storybook + Vitest.",
+  "license": "MIT",
+  "author": "Nirmal Samaranayaka <nirmal.fullstack@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NirmalSamaranayaka/polyfront-slider.git"
+  },
+  "homepage": "https://github.com/NirmalSamaranayaka/polyfront-slider",
+  "bugs": "https://github.com/NirmalSamaranayaka/polyfront-slider/issues",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18.18.0"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --minify",
+    "dev": "tsup src/index.ts --watch --format esm,cjs --dts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests=false",
+    "test:watch": "vitest",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "tsup": "^8.5.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.9",
+    "@testing-library/dom": "^10.4.0",
+    "@storybook/web-components": "^8.6.14",
+    "@storybook/web-components-vite": "^8.6.14",
+    "@storybook/addon-essentials": "^8.6.14",
+    "storybook": "^8.6.14",
+    "vite": "^5.4.10"
+  },
+  "vitest": {
+    "environment": "jsdom"
+  }
+}
