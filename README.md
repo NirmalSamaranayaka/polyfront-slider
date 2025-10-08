@@ -1,16 +1,19 @@
+# 🎛️ **polyfront-slider** (v0.0.2)
 
-# 🎛️ polyfront-slider (v0.0.1)
+[![npm version](https://img.shields.io/npm/v/polyfront-slider)](https://www.npmjs.com/package/polyfront-slider)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![Storybook](https://img.shields.io/badge/Storybook-Live%20Demo-ff4785?logo=storybook)](https://nirmalsamaranayaka.github.io/polyfront-slider)
+[![CI](https://github.com/NirmalSamaranayaka/polyfront-slider/actions/workflows/ci.yml/badge.svg)](https://github.com/NirmalSamaranayaka/polyfront-slider/actions/workflows/ci.yml)
 
 > A modern, **TypeScript-based**, **framework-agnostic** Web Component slider — beautifully designed, mobile-first, accessible, and highly configurable.  
-> Built by [Nirmal Samaranayaka](mailto:nirmal.fullstack@gmail.com).
+> Built and maintained by [Nirmal Samaranayaka](mailto:nirmal.fullstack@gmail.com).
 
 ---
 
 ## ✨ Overview
+`polyfront-slider` is an **open-source Web Component slider** that works in **React**, **Vue**, **Angular**, **Svelte**, or plain **HTML/JS**.  
 
-`polyfront-slider` is an **open-source slider component** designed to work seamlessly across **React**, **Vue**, **Angular**, **Svelte**, or plain **HTML/JS** environments.
-
-It offers **enterprise-level configurability**, **design tokens**, **dark mode**, **accessibility**, and **form integration** — all in a lightweight, dependency-free package.
+It provides **enterprise-grade configurability**, **theming tokens**, **accessibility**, and **form integration** — all in a single, dependency-free package.
 
 ---
 
@@ -18,15 +21,15 @@ It offers **enterprise-level configurability**, **design tokens**, **dark mode**
 
 | Category | Highlights |
 |-----------|-------------|
-| 🎨 **UI/UX** | OKLCH color system, dark mode, hover/active/focus animations, large touch hit areas, subtle elevation, and theme tokens. |
-| 🧩 **Configurable** | Use either `{min, max, step}` or discrete arrays like `[0,1500,1600,1700,…]`. Auto-step calculation with missing-step disabling. |
-| 🧱 **Modes** | Single thumb or dual-thumb (range) slider. |
-| 🧠 **Smart Logic** | Automatically detects step size (via GCD), allows min distance enforcement, and blocked value intervals. |
-| ♿ **Accessible** | Full WAI-ARIA compliance, keyboard navigation (arrows, PgUp/Dn, Home/End), and `form-associated` element support. |
-| 🖥️ **Responsive** | 100% width, touch-friendly, and adaptive to any layout or container. |
-| 🌗 **Themeable** | Size presets (`sm`, `md`, `lg`), tokens via CSS variables, and responsive density control. |
-| 🧪 **Reliable** | TypeScript + Vitest (jsdom) + Storybook 8.6 + GitHub CI workflows. |
-| 🧰 **Reusable** | Works standalone or as an npm module across multiple frameworks. |
+| 🎨 **UI/UX** | OKLCH color system, dark mode, hover/active/focus states, large touch targets, and elevation shadows. |
+| 🧩 **Configurable** | Supports `{min, max, step}` or discrete arrays like `[0,1500,1600,…]`. Auto-detects step size and disables missing values. |
+| 🧱 **Modes** | Single or dual-thumb (range) slider. |
+| 🧠 **Smart Logic** | Auto GCD step detection, blocked intervals, minimum thumb distance. |
+| ♿ **Accessible** | Full WAI-ARIA compliance, keyboard navigation, and `form-associated` support. |
+| 🖥️ **Responsive** | 100 % width, mobile-friendly, fits any layout. |
+| 🌗 **Themeable** | Size presets (`sm`,`md`,`lg`), CSS tokens, and dark/light mode support. |
+| 🧪 **Reliable** | TypeScript + Vitest + Storybook 8.6 + GitHub CI. |
+| 🧰 **Reusable** | Works standalone or via npm import in any framework. |
 
 ---
 
@@ -41,20 +44,17 @@ npm install polyfront-slider
 ## 🧑‍💻 Usage
 
 ### 1️⃣ Register the component
-
 ```ts
 import { definePolyfrontSlider } from 'polyfront-slider';
 definePolyfrontSlider();
 ```
 
 ### 2️⃣ Add to your HTML / JSX
-
 ```html
 <polyfront-slider id="price-slider" style="inline-size:100%;max-inline-size:480px"></polyfront-slider>
 ```
 
 ### 3️⃣ Configure dynamically
-
 ```ts
 const slider = document.getElementById('price-slider');
 slider.setConfig({
@@ -75,25 +75,25 @@ slider.setConfig({
 
 ---
 
-## 🧮 Config Options
+## ⚙️ Config Options
 
 | Option | Type | Default | Description |
 |---------|------|----------|-------------|
-| `mode` | `'single' | 'range'` | `'single'` | Enables range (2 thumbs) or single thumb. |
-| `orientation` | `'horizontal' | 'vertical'` | `'horizontal'` | Slider direction. |
-| `size` | `'sm' | 'md' | 'lg'` | `'md'` | Changes track, thumb, and tick sizes. |
-| `values` | `Array<number|string|object>` | — | Discrete slider values. |
-| `min/max/step` | `number` | — | Continuous slider range. |
-| `disableMissingSteps` | `boolean` | `true` | Disables gaps in discrete arrays. |
+| `mode` | `'single' \| 'range'` | `'single'` | Enables range (2 thumbs) or single thumb. |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Slider direction. |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Track and thumb size preset. |
+| `values` | `Array<number \| string \| object>` | — | Discrete slider values. |
+| `min` / `max` / `step` | `number` | — | Continuous slider range. |
+| `disableMissingSteps` | `boolean` | `true` | Disables non-defined steps. |
 | `blockedIntervals` | `[number,number][]` | `[]` | Disable ranges of values. |
-| `minThumbDistance` | `number` | `0` | Minimum thumb separation in range mode. |
-| `showTicks` | `boolean` | `false` | Displays ticks along track. |
+| `minThumbDistance` | `number` | `0` | Minimum thumb distance in range mode. |
+| `showTicks` | `boolean` | `false` | Displays tick marks. |
 | `showLabels` | `boolean` | `false` | Displays tick labels. |
 | `showTooltip` | `boolean` | `false` | Shows tooltips for thumb values. |
-| `tickEvery` | `number` | `1` | Render tick/label every Nth step. |
-| `rtl` | `boolean` | `false` | RTL layout support. |
+| `tickEvery` | `number` | `1` | Render every N-th tick/label. |
+| `rtl` | `boolean` | `false` | Right-to-left layout support. |
 | `ariaLabel*` | `string` | — | Accessibility labels. |
-| `name` | `string` | — | Enables form submission with JSON string. |
+| `name` | `string` | — | Enables form submission via JSON value. |
 
 ---
 
@@ -110,7 +110,7 @@ polyfront-slider {
 }
 ```
 
-✅ Supports **dark mode** (`prefers-color-scheme: dark`) and **reduced motion** preferences.
+✅ Supports **dark mode** (`prefers-color-scheme: dark`) and **reduced motion**.
 
 ---
 
@@ -120,8 +120,7 @@ polyfront-slider {
 npm run test
 ```
 
-Vitest + jsdom test example:
-
+Example:
 ```ts
 import { PolyfrontSlider } from 'polyfront-slider';
 
@@ -133,25 +132,24 @@ expect(el.getValue()).toEqual([20, 80]);
 
 ---
 
-## 📘 Storybook
+## 📘 Storybook Demo
 
+Local preview:
 ```bash
 npm run storybook
 ```
 
-Opens at [http://localhost:6006](http://localhost:6006)
-
-Showcases continuous/discrete modes, sizes, dark mode, and accessibility.
+Live demo → **https://nirmalsamaranayaka.github.io/polyfront-slider**
 
 ---
 
-## ⚙️ Build
+## 🏗️ Build
 
 ```bash
 npm run build
 ```
-Outputs:
 
+Outputs:
 ```
 dist/
 ├─ index.mjs
@@ -161,17 +159,17 @@ dist/
 
 ---
 
-## 🧰 CI/CD via GitHub Actions
+## ⚙️ CI / CD via GitHub Actions
 
 | Workflow | Trigger | Purpose |
 |-----------|----------|---------|
-| **ci.yml** | Push/PR to `main` | Type check, test, build verification. |
-| **release.yml** | Tag push (`v*.*.*`) | Auto-publishes to npm (needs `NPM_TOKEN`). |
-| **storybook.yml** | Push to `main` | Builds & deploys Storybook to GitHub Pages. |
+| **ci.yml** | Push/PR → `main` | Type check, test, build verification |
+| **storybook.yml** | Push → `main` | Deploys Storybook to GitHub Pages |
+| **release.yml** | Tag push (`v*.*.*`) | Auto-publishes to npm (requires `NPM_TOKEN`) |
 
 ---
 
-## 🧱 Folder Structure
+## 📁 Folder Structure
 
 ```
 polyfront-slider/
@@ -197,11 +195,9 @@ polyfront-slider/
 
 ```bash
 npm run build
-npm adduser
+npm version patch
 npm publish --access public
 ```
-
-Or push a tag like `v0.0.1` to trigger GitHub Action auto-publish.
 
 ---
 
@@ -209,10 +205,11 @@ Or push a tag like `v0.0.1` to trigger GitHub Action auto-publish.
 
 **Nirmal Samaranayaka**  
 📧 [nirmal.fullstack@gmail.com](mailto:nirmal.fullstack@gmail.com)  
-💼 [GitHub: NirmalSamaranayaka](https://github.com/NirmalSamaranayaka)
+💼 https://github.com/NirmalSamaranayaka
 
 ---
 
 ## 🪪 License
 
-**MIT License** © 2025 Nirmal Samaranayaka
+MIT © 2025 Nirmal Samaranayaka  
+See [`LICENSE`](./LICENSE) for details.
