@@ -1,0 +1,1 @@
+const n={controls:{expanded:!0}},r=[t=>{const e=document.createElement("div");e.style.padding="24px",e.style.boxSizing="border-box";const o=t();return e.appendChild(o),e}];export{r as decorators,n as parameters};
