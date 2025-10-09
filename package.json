@@ -33,7 +33,8 @@
     "form-associated",
     "react-wrapper",
     "vite",
-    "webpack"
+    "webpack",
+    "vitest"
   ],
   "repository": {
     "type": "git",
