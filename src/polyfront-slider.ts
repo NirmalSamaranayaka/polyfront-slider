@@ -15,6 +15,7 @@ export interface PFSliderConfig<T = unknown> {
   tickEvery?: number; ariaLabel?: string; ariaLabelLower?: string; ariaLabelUpper?: string;
   disabled?: boolean; rtl?: boolean; output?: OutputMode; name?: string;
   showFill?: boolean;
+  blocked?: number[] | [number, number][];
 }
 
 const BaseHTMLElement: typeof HTMLElement = (globalThis as any).HTMLElement ?? (class {} as any);
@@ -174,7 +175,7 @@ function gcdArray(nums: number[]): number {
 
 export class PolyfrontSlider<T = unknown> extends BaseHTMLElement {
   static formAssociated = true;
-  static get observedAttributes() { return ['orientation','mode','disabled','name','data-size']; }
+  static get observedAttributes() { return ['size', 'orientation', 'mode', 'disabled', 'min', 'max', 'step', 'values']; }
 
   private root!: ShadowRoot;
   private track!: HTMLElement;
@@ -222,34 +223,187 @@ export class PolyfrontSlider<T = unknown> extends BaseHTMLElement {
     this.internals = (this as any).attachInternals ? (this as any).attachInternals() : null;
   }
 
-  connectedCallback() {
-    if (!this.root) return;
-    this.ro = new ResizeObserver(() => this.render());
-    this.ro.observe(this);
-    if (!this.style.width && this.cfg.orientation === 'horizontal') this.style.width = '100%';
-    if (!this.style.height && this.cfg.orientation === 'vertical') this.style.height = '240px';
-    this.fill.style.display = this.cfg.showFill ? 'block' : 'none';
-    this.applySizeAttr();
-    this.ensureSizeDefaults();
-    this.setupARIA();
-    this.attachEvents();
-    this.render();
-  }
-  disconnectedCallback() { this.ro?.disconnect(); }
+ connectedCallback() {
+  this.ro = new ResizeObserver(() => this.render());
+  this.ro.observe(this);
 
-  attributeChangedCallback(name: string, _old: string | null, value: string | null) {
-    if (name === 'orientation') {
-      this.cfg.orientation = (value as Orientation) || 'horizontal';
-      this.ensureSizeDefaults();           
+  if (!this.style.width && this.cfg.orientation === 'horizontal') this.style.width = '100%';
+  if (!this.style.height && this.cfg.orientation === 'vertical') this.style.height = '240px';
+
+  this.fill.style.display = this.cfg.showFill ? 'block' : 'none';
+  this.applySizeAttr();
+  this.ensureSizeDefaults();
+  this.setupARIA();
+  this.attachEvents(); 
+
+  this.render();
+}
+
+  disconnectedCallback() {
+    this.ro?.disconnect();
+  }
+
+ private parseNum(v: string | null, fallback: number) {
+  const n = v === null ? NaN : Number(v);
+  return Number.isFinite(n) ? n : fallback;
+}
+
+attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
+  if (oldValue === newValue) return;
+  if (name.startsWith('data-')) return; // avoid reflection loops
+
+  switch (name) {
+    case 'orientation':
+      this.cfg.orientation = (newValue as Orientation) || 'horizontal';
+      this.ensureSizeDefaults();
+      break;
+    case 'mode':
+      this.cfg.mode = (newValue as Mode) || 'single';
+      break;
+    case 'disabled':
+      this.cfg.disabled = newValue !== null;
+      break;
+    case 'name':
+      this.cfg.name = newValue || undefined;
+      break;
+
+    // numeric continuous attrs
+    case 'min':
+      this.isDiscrete = false;
+      this.min = this.parseNum(newValue, 0);
+      break;
+    case 'max':
+      this.isDiscrete = false;
+      this.max = this.parseNum(newValue, 100);
+      break;
+    case 'step':
+      this.isDiscrete = false;
+      this.step = Math.max(1e-12, this.parseNum(newValue, 1));
+      break;
+
+    // discrete list via attribute (comma-separated)
+    case 'values': {
+      this.isDiscrete = true;
+      const arr = (newValue ?? '')
+        .split(',')
+        .map(s => s.trim())
+        .filter(s => s.length > 0)
+        .map(s => (Number.isFinite(Number(s)) ? Number(s) : s));
+      this.values = arr;
+      // recompute numeric projection bounds/step
+      const nums: number[] = [];
+      let allNumeric = true;
+      for (const v of arr) {
+        if (typeof v === 'number') nums.push(v);
+        else { allNumeric = false; break; }
+      }
+      if (allNumeric && nums.length) {
+        nums.sort((a,b)=>a-b);
+        this.min = nums[0]; this.max = nums[nums.length-1];
+        const diffs: number[] = [];
+        for (let i=1;i<nums.length;i++) diffs.push(Math.abs(nums[i]-nums[i-1]));
+        this.step = gcdArray(diffs) || 1;
+      } else {
+        this.min = 0; this.max = arr.length - 1; this.step = 1;
+      }
+      this.disabledSet.clear();
+      break;
     }
-    if (name === 'mode') this.cfg.mode = (value as Mode) || 'single';
-    if (name === 'disabled') this.cfg.disabled = value !== null;
-    if (name === 'name') this.cfg.name = value || undefined;
-    if (name === 'data-size') { this.cfg.size = (value as Size) || 'md'; this.applySizeAttr(); }
+  }
+    // after any attribute change, keep indices valid and re-render
+    this.pos0 = Math.max(0, Math.min(this.pos0, this.gridCount() - 1));
+    this.pos1 = Math.max(0, Math.min(this.pos1, this.gridCount() - 1));
+    if (this.cfg.mode === 'single' || !this.cfg.enableRange) this.pos1 = this.pos0;
+
     this.render();
+}
+
+  private applySizeAttr() {
+    const v = this.cfg.size!;
+    if (this.getAttribute('data-size') !== v) {
+      this.setAttribute('data-size', v);
+    }
   }
 
-  private applySizeAttr() { this.setAttribute('data-size', this.cfg.size!); }
+ private onTrackPointerDown = (e: PointerEvent | MouseEvent) => {
+    if (this.cfg.disabled) return;
+
+    const track = this.track as HTMLElement | undefined; // <-- use your existing 'track' field
+    if (!track) return;
+
+    const isHorizontal = this.cfg.orientation !== 'vertical';
+
+    // Client coordinate with fallbacks (helps in happy-dom/jsdom)
+    const clientPos = isHorizontal
+      ? ((e as any).clientX ?? (e as any).pageX ?? (e as any).x ?? 0)
+      : ((e as any).clientY ?? (e as any).pageY ?? (e as any).y ?? 0);
+
+    const rect = track.getBoundingClientRect();
+    const frac = isHorizontal
+      ? (clientPos - rect.left) / (rect.width || 1)
+      : (rect.bottom - clientPos) / (rect.height || 1); // top->bottom
+
+    const clamped = Math.max(0, Math.min(1, frac));
+    const target = this.valueFromFractionContinuous(clamped);
+
+    const current = this.getValue();
+    if (Array.isArray(current)) {
+      // range mode: move the nearest thumb only
+      const [a, b] = current;
+      const moveLeft = Math.abs(a - target) <= Math.abs(b - target);
+      const next: [number, number] = moveLeft ? [target, b] : [a, target];
+      this.setValue(next);
+    } else {
+      // single mode
+      this.setValue(target);
+    }
+
+    e.preventDefault?.();
+  };
+
+  private valueFromFractionContinuous(frac: number) {
+    const min = this.min;
+    const max = this.max;
+    const step = this.step;
+    const raw = min + frac * (max - min);
+    const snapped = Math.round(raw / step) * step;
+    return Math.max(min, Math.min(max, snapped));
+  }
+
+  private eventToFraction(e: Event, rect: DOMRect): number {
+    const isH = this.cfg.orientation !== 'vertical';
+
+    // 1) Prefer standard coords
+    const anyEvt = e as any;
+    let cx = anyEvt.clientX ?? anyEvt.pageX ?? anyEvt.x;
+    let cy = anyEvt.clientY ?? anyEvt.pageY ?? anyEvt.y;
+
+    // 2) Fall back to offset-like coords if present
+    if (cx == null || cy == null) {
+      // Some test drivers set offsetX/Y only
+      if (typeof anyEvt.offsetX === 'number' || typeof anyEvt.offsetY === 'number') {
+        cx = rect.left + (anyEvt.offsetX ?? 0);
+        cy = rect.top + (anyEvt.offsetY ?? 0);
+      }
+    }
+
+    // 3) If still missing, use **center** of the track
+    const W = rect.width  > 0 ? rect.width  : 1;
+    const H = rect.height > 0 ? rect.height : 1;
+    const left   = rect.left ?? 0;
+    const top    = rect.top  ?? 0;
+    const bottom = rect.bottom ?? (top + H);
+
+    if (cx == null) cx = left + W / 2;
+    if (cy == null) cy = top  + H / 2;
+
+    // 4) Compute 0..1, clamped
+    const frac = isH
+      ? (cx - left) / W
+      : (bottom - cy) / H;
+
+    return Math.max(0, Math.min(1, frac));
+  }
 
   setConfig(cfg: PFSliderConfig<T>) {
     if (cfg.enableRange !== undefined) this.cfg.enableRange = cfg.enableRange;
@@ -417,11 +571,24 @@ export class PolyfrontSlider<T = unknown> extends BaseHTMLElement {
     return idx;
   }
 
-  private pointToGrid(x: number, y: number, rect: DOMRect): number {
+  private pointToGrid(x?: number, y?: number, rect?: DOMRect): number {
+    const r = rect ?? this.track.getBoundingClientRect();
     const count = this.gridCount();
+
+    // Safe geometry + center fallbacks for happy-dom
+    const W = r?.width && r.width > 0 ? r.width : 1;
+    const H = r?.height && r.height > 0 ? r.height : 1;
+    const left   = r?.left   ?? 0;
+    const top    = r?.top    ?? 0;
+    const bottom = r?.bottom ?? (top + H);
+
+    const cx = (x ?? (left + W / 2));
+    const cy = (y ?? (top  + H / 2));
+
     const ratio = this.cfg.orientation === 'horizontal'
-      ? Math.max(0, Math.min(1, (x - rect.left) / rect.width))
-      : 1 - Math.max(0, Math.min(1, (y - rect.top) / rect.height));
+      ? Math.max(0, Math.min(1, (cx - left) / W))
+      : Math.max(0, Math.min(1, (bottom - cy) / H));
+
     const raw = ratio * (count - 1);
     return this.clampNearestEnabled(Math.round(raw));
   }
@@ -483,14 +650,33 @@ export class PolyfrontSlider<T = unknown> extends BaseHTMLElement {
   private attachEvents() {
     if (!this.root) return;
     this.track.addEventListener('pointerdown', (e) => {
-      if (this.cfg.disabled) return;
-      const rect = this.track.getBoundingClientRect();
-      const pos = this.pointToGrid((e as PointerEvent).clientX, (e as PointerEvent).clientY, rect);
-      const d0 = Math.abs(pos - this.pos0);
-      const d1 = Math.abs(pos - this.pos1);
-      const active = (this.cfg.mode === 'range' && !this.thumbs[1].hidden) ? (d0 <= d1 ? 0 : 1) : 0;
-      this.setThumbPosition(active as 0|1, pos, true);
-    });
+        if (this.cfg.disabled) return;
+
+        const rect = this.track.getBoundingClientRect();
+        // If the track has no size (common in test DOM), pretend it has 1px in the main axis
+        const fakeRect = {
+          ...rect,
+          width:  rect.width  > 0 ? rect.width  : 1,
+          height: rect.height > 0 ? rect.height : 1,
+          bottom: rect.bottom ?? (rect.top + (rect.height > 0 ? rect.height : 1)),
+        } as DOMRect;
+
+        const frac = this.eventToFraction(e, fakeRect);
+
+        // Convert to grid index deterministically
+        const count = this.gridCount();
+        const pos   = this.clampNearestEnabled(Math.round(frac * (count - 1)));
+
+        // Move **nearest** thumb only
+        const d0 = Math.abs(pos - this.pos0);
+        const d1 = Math.abs(pos - this.pos1);
+        const active = (this.cfg.mode === 'range' && !this.thumbs[1].hidden) ? (d0 <= d1 ? 0 : 1) : 0;
+
+        this.setThumbPosition(active as 0 | 1, pos, true);
+        e.preventDefault?.();
+        e.stopPropagation?.();
+      });
+
     this.thumbs.forEach((thumb, i) => {
       thumb.addEventListener('pointerdown', (e) => {
         if (this.cfg.disabled) return;

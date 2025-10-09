@@ -1,29 +1,53 @@
 {
   "name": "polyfront-slider",
   "version": "0.0.2",
-  "description": "Polished, accessible TypeScript Web Component slider: discrete arrays or min/max/step, auto-step, missing-step disabling, blocked intervals, min distance, range/vertical/RTL, ARIA, form-associated. Storybook + Vitest.",
+  "description": "A modern, accessible TypeScript Web Component slider supporting horizontal, vertical, and range modes with ticks, labels, tooltips, and form integration.",
   "license": "MIT",
   "author": "Nirmal Samaranayaka <nirmal.fullstack@gmail.com>",
   "keywords": [
-    "slider", "range-slider", "dual-thumb-slider", "vertical-slider", "horizontal-slider",
-    "discrete-slider", "continuous-slider", "web-components", "custom-element", "typescript",
-    "storybook", "accessible", "a11y", "aria", "keyboard-accessible", "touch", "pointer-events",
-    "ticks", "labels", "tooltip", "blocked-intervals", "min-thumb-distance", "rtl", "i18n",
-    "forms", "form-associated", "react-wrapper", "vite", "webpack"
+    "slider",
+    "range-slider",
+    "dual-thumb-slider",
+    "vertical-slider",
+    "horizontal-slider",
+    "discrete-slider",
+    "continuous-slider",
+    "web-components",
+    "custom-element",
+    "typescript",
+    "storybook",
+    "accessible",
+    "a11y",
+    "aria",
+    "keyboard-accessible",
+    "touch",
+    "pointer-events",
+    "ticks",
+    "labels",
+    "tooltip",
+    "blocked-intervals",
+    "min-thumb-distance",
+    "rtl",
+    "i18n",
+    "forms",
+    "form-associated",
+    "react-wrapper",
+    "vite",
+    "webpack"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/NirmalSamaranayaka/polyfront-slider.git"
   },
   "homepage": "https://github.com/NirmalSamaranayaka/polyfront-slider#readme",
-  "bugs": { "url": "https://github.com/NirmalSamaranayaka/polyfront-slider/issues" },
-
+  "bugs": {
+    "url": "https://github.com/NirmalSamaranayaka/polyfront-slider/issues"
+  },
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "source": "src/index.ts",
-
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -32,39 +56,69 @@
       "default": "./dist/index.mjs"
     }
   },
-
   "unpkg": "./dist/index.mjs",
   "jsdelivr": "./dist/index.mjs",
-
   "sideEffects": false,
-  "engines": { "node": ">=18.18.0" },
+  "engines": {
+    "node": ">=18.18.0"
+  },
   "packageManager": "npm@10",
-
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --minify --sourcemap --clean",
     "dev": "tsup src/index.ts --watch --format esm,cjs --dts --sourcemap",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests=false",
-    "test:watch": "vitest",
+    "test:watch": "vitest --watch",
+    "test:ci": "vitest run --passWithNoTests=false",
+    "test:verbose": "vitest run --reporter=verbose",
+    "test:cov": "vitest run --coverage",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
+    "changeset": "changeset",
+    "version-packages": "changeset version && npm install",
+    "release": "npm run build && npm publish --access public",
     "prepublishOnly": "npm run typecheck && npm run build && npm test"
   },
-
-  "files": ["dist", "README.md", "LICENSE", "CHANGELOG.md", "package.json"],
-
-  "publishConfig": { "access": "public" },
-
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
+    "@changesets/cli": "^2.27.9",
+    "@juggle/resize-observer": "^3.4.0",
     "@storybook/addon-essentials": "^8.6.14",
     "@storybook/web-components": "^8.6.14",
     "@storybook/web-components-vite": "^8.6.14",
-    "@testing-library/dom": "^10.4.0",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@types/node": "^22.7.5",
+    "@webcomponents/custom-elements": "^1.6.0",
+    "happy-dom": "^19.0.2",
     "storybook": "^8.6.14",
     "tsup": "^8.5.0",
     "typescript": "^5.6.3",
     "vite": "^5.4.10",
-    "vitest": "^2.1.9"
+    "vitest": "^3.2.4"
   },
-  "vitest": { "environment": "jsdom" }
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.22.4"
+  },
+  "vitest": {
+    "environment": "jsdom",
+    "setupFiles": [
+      "tests/setup.ts"
+    ],
+    "coverage": {
+      "reporter": [
+        "text",
+        "lcov"
+      ]
+    }
+  }
 }
