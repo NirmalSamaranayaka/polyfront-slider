@@ -10,7 +10,7 @@
 <!-- @SCOPE:end -->
 
 <!-- @UNSCOPE:start -->
-# 🎛️ polyfront-slider (v0.0.3)
+# 🎛️ polyfront-slider (v1.0.0)
 
 [![npm version](https://img.shields.io/npm/v/polyfront-slider)](https://www.npmjs.com/package/polyfront-slider)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](../../LICENSE)
