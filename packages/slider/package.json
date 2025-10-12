@@ -101,6 +101,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@types/node": "^22.7.5",
     "@webcomponents/custom-elements": "^1.6.0",
+    "rollup": "^4.49.0",
     "happy-dom": "^19.0.2",
     "storybook": "^8.6.14",
     "tsup": "^8.5.0",
