@@ -80,10 +80,10 @@ if ((TEMPLATE as any).innerHTML !== undefined) {
       .track {
         background: var(--pf-color-track);
         border-radius: var(--pf-radius);
-        position: relative;
+        position: absolute;
         overflow: visible;
       }
-      :host([orientation="horizontal"]) .track { height: var(--pf-track-size); width: 100%; }
+      :host([orientation="horizontal"]) .track { left: 0; right: 0; top: 50%; transform: translateY(-50%); height: var(--pf-track-size); }
       :host([orientation="vertical"])   .track { width: var(--pf-track-size);  height: 100%; }
 
       .fill { position: absolute; border-radius: var(--pf-radius); }
@@ -114,7 +114,7 @@ if ((TEMPLATE as any).innerHTML !== undefined) {
       /* layers: tooltips > labels > ticks */
       .ticks   { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
       .labels  { position: absolute; inset: 0; pointer-events: none; z-index: 1; font-size: 12px; color: var(--pf-color-label); }
-      .tooltip { z-index: 2; }
+      .tooltip { position: absolute; z-index: 2; }
 
       /* ticks */
       .tick {
@@ -647,47 +647,61 @@ attributeChangedCallback(name: string, oldValue: string | null, newValue: string
     thumb.setAttribute('aria-valuetext', Array.isArray(val) ? val.join(' – ') : String(val));
   }
 
+  private handleTrackPointer = (e: PointerEvent | MouseEvent) => {
+    if (this.cfg.disabled) return;
+
+    const rect = this.track.getBoundingClientRect();
+    // If the track has no size (test DOMs), synthesize a minimal rect
+    const fakeRect = {
+      ...rect,
+      width:  rect.width  > 0 ? rect.width  : 1,
+      height: rect.height > 0 ? rect.height : 1,
+      bottom: rect.bottom ?? (rect.top + (rect.height > 0 ? rect.height : 1)),
+    } as DOMRect;
+
+    const frac = this.eventToFraction(e as any, fakeRect);
+
+    // Convert to grid index deterministically
+    const count = this.gridCount();
+    const pos   = this.clampNearestEnabled(Math.round(frac * (count - 1)));
+
+    // Move **nearest** thumb only
+    const d0 = Math.abs(pos - this.pos0);
+    const d1 = Math.abs(pos - this.pos1);
+    const active = (this.cfg.mode === 'range' && !this.thumbs[1].hidden) ? (d0 <= d1 ? 0 : 1) : 0;
+
+    this.setThumbPosition(active as 0 | 1, pos, true);
+    (e as any).preventDefault?.();
+    (e as any).stopPropagation?.();
+  };
+
+
   private attachEvents() {
     if (!this.root) return;
-    this.track.addEventListener('pointerdown', (e) => {
-        if (this.cfg.disabled) return;
+    // 1) Host-level listener (captures events dispatched on the custom element)
+    //    Works when tests do: el.dispatchEvent(new PointerEvent('pointerdown', ...))
+    this.addEventListener('pointerdown', (e) => {
+      // Only handle if the track is in the composed path
+      const path = (e as any).composedPath?.() ?? [];
+      if (path.includes(this.track)) {
+        this.handleTrackPointer(e as PointerEvent);
+      }
+    }, { capture: true });
 
-        const rect = this.track.getBoundingClientRect();
-        // If the track has no size (common in test DOM), pretend it has 1px in the main axis
-        const fakeRect = {
-          ...rect,
-          width:  rect.width  > 0 ? rect.width  : 1,
-          height: rect.height > 0 ? rect.height : 1,
-          bottom: rect.bottom ?? (rect.top + (rect.height > 0 ? rect.height : 1)),
-        } as DOMRect;
+    // 2) Direct track listener (works for real user clicks or tests that target the track)
+    this.track.addEventListener('pointerdown', (e) => this.handleTrackPointer(e));
 
-        const frac = this.eventToFraction(e, fakeRect);
-
-        // Convert to grid index deterministically
-        const count = this.gridCount();
-        const pos   = this.clampNearestEnabled(Math.round(frac * (count - 1)));
-
-        // Move **nearest** thumb only
-        const d0 = Math.abs(pos - this.pos0);
-        const d1 = Math.abs(pos - this.pos1);
-        const active = (this.cfg.mode === 'range' && !this.thumbs[1].hidden) ? (d0 <= d1 ? 0 : 1) : 0;
-
-        this.setThumbPosition(active as 0 | 1, pos, true);
-        e.preventDefault?.();
-        e.stopPropagation?.();
-      });
-
-    this.thumbs.forEach((thumb, i) => {
+     this.thumbs.forEach((thumb, i) => {
       thumb.addEventListener('pointerdown', (e) => {
         if (this.cfg.disabled) return;
-        (e.target as HTMLElement).setPointerCapture((e as PointerEvent).pointerId);
+        (e.target as HTMLElement).setPointerCapture?.((e as PointerEvent).pointerId);
         const rect = this.track.getBoundingClientRect();
         const move = (ev: PointerEvent) => {
           const p = this.pointToGrid(ev.clientX, ev.clientY, rect);
           this.setThumbPosition(i as 0|1, p, true);
         };
         const up = (ev: PointerEvent) => {
-          (ev.target as HTMLElement).releasePointerCapture((e as PointerEvent).pointerId);
+          (ev.target as HTMLElement).releasePointerCapture?.((e as PointerEvent).pointerId);
           window.removeEventListener('pointermove', move);
           window.removeEventListener('pointerup', up);
           this.emitChange('change');
@@ -697,32 +711,32 @@ attributeChangedCallback(name: string, oldValue: string | null, newValue: string
       });
     });
 
-    this.thumbs.forEach((thumb, i) => {
-      thumb.addEventListener('keydown', (e) => {
-        if (this.cfg.disabled) return;
-        const key = (e as KeyboardEvent).key;
-        let delta = 0;
-        const big = Math.max(1, Math.round(this.gridCount() * 0.1));
-        const rtl = this.cfg.rtl && this.cfg.orientation === 'horizontal';
-        const neg = (dir: number) => (rtl ? -dir : dir);
-        switch (key) {
-          case 'ArrowLeft':
-          case 'ArrowDown': delta = neg(-1); break;
-          case 'ArrowRight':
-          case 'ArrowUp':   delta = neg(1); break;
-          case 'PageDown':  delta = neg(-big); break;
-          case 'PageUp':    delta = neg(big); break;
-          case 'Home': this.setThumbPosition(i as 0|1, 0, true); this.emitChange('change'); return;
-          case 'End':  this.setThumbPosition(i as 0|1, this.gridCount()-1, true); this.emitChange('change'); return;
-          default: return;
-        }
-        e.preventDefault();
-        const current = (i === 0 ? this.pos0 : this.pos1);
-        this.setThumbPosition(i as 0|1, current + delta, true);
-        this.emitChange('change');
-      });
+   this.thumbs.forEach((thumb, i) => {
+    thumb.addEventListener('keydown', (e) => {
+      if (this.cfg.disabled) return;
+      const key = (e as KeyboardEvent).key;
+      let delta = 0;
+      const big = Math.max(1, Math.round(this.gridCount() * 0.1));
+      const rtl = this.cfg.rtl && this.cfg.orientation === 'horizontal';
+      const neg = (dir: number) => (rtl ? -dir : dir);
+      switch (key) {
+        case 'ArrowLeft':
+        case 'ArrowDown': delta = neg(-1); break;
+        case 'ArrowRight':
+        case 'ArrowUp':   delta = neg(1); break;
+        case 'PageDown':  delta = neg(-big); break;
+        case 'PageUp':    delta = neg(big); break;
+        case 'Home': this.setThumbPosition(i as 0|1, 0, true); this.emitChange('change'); return;
+        case 'End':  this.setThumbPosition(i as 0|1, this.gridCount()-1, true); this.emitChange('change'); return;
+        default: return;
+      }
+      e.preventDefault();
+      const current = (i === 0 ? this.pos0 : this.pos1);
+      this.setThumbPosition(i as 0|1, current + delta, true);
+      this.emitChange('change');
     });
-  }
+  });
+}
 
   private render() {
     if (!this.root) return;
