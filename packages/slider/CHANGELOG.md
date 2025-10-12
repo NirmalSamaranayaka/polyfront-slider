@@ -5,10 +5,11 @@ This project follows [Semantic Versioning](https://semver.org/) and the [Keep a 
 
 ---
 
-## [1.0.0] - 2025-10-09
+## [1.0.0] - 2025-10-12
 ### 🎉 Initial Scoped Release
 This is the first release of the **scoped** package `@3nvs/polyfront-slider`.  
 It contains the same implementation previously shipped under the unscoped `polyfront-slider` package (see history below), plus all fixes and additions up to unscoped **0.0.3**.
+Horizontal thumb fix – corrected positioning and centering for smoother, more consistent slider movement in horizontal mode.
 
 ### Included from prior unscoped releases
 #### From 0.0.2

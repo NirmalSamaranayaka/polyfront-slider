@@ -3,6 +3,15 @@
 All notable changes to **polyfront-slider** are documented in this file.  
 This project follows [Semantic Versioning](https://semver.org/) and the [Keep a Changelog](https://keepachangelog.com/) style.
 
+
+---
+
+## [0.0.3] - 2025-10-12
+### Added
+- Horizontal thumb fix – corrected positioning and centering for smoother, more consistent slider movement in horizontal mode.
+- @3nvs/polyfront-slider (scoped, main library)
+- polyfront-slider (unscoped shim, re-exports the scoped package)
+
 ---
 
 ## [0.0.2] - 2025-10-09
