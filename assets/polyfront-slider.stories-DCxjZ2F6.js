@@ -56,10 +56,10 @@ var C=Object.defineProperty;var E=(u,c,t)=>c in u?C(u,c,{enumerable:!0,configura
       .track {
         background: var(--pf-color-track);
         border-radius: var(--pf-radius);
-        position: relative;
+        position: absolute;
         overflow: visible;
       }
-      :host([orientation="horizontal"]) .track { height: var(--pf-track-size); width: 100%; }
+      :host([orientation="horizontal"]) .track { left: 0; right: 0; top: 50%; transform: translateY(-50%); height: var(--pf-track-size); }
       :host([orientation="vertical"])   .track { width: var(--pf-track-size);  height: 100%; }
 
       .fill { position: absolute; border-radius: var(--pf-radius); }
@@ -90,7 +90,7 @@ var C=Object.defineProperty;var E=(u,c,t)=>c in u?C(u,c,{enumerable:!0,configura
       /* layers: tooltips > labels > ticks */
       .ticks   { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
       .labels  { position: absolute; inset: 0; pointer-events: none; z-index: 1; font-size: 12px; color: var(--pf-color-label); }
-      .tooltip { z-index: 2; }
+      .tooltip { position: absolute; z-index: 2; }
 
       /* ticks */
       .tick {
