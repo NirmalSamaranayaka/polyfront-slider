@@ -6,11 +6,15 @@ This project follows [Semantic Versioning](https://semver.org/) and the [Keep a 
 
 ---
 
-## [0.0.3] - 2025-10-12
-### Added
-- Horizontal thumb fix – corrected positioning and centering for smoother, more consistent slider movement in horizontal mode.
-- @3nvs/polyfront-slider (scoped, main library)
-- polyfront-slider (unscoped shim, re-exports the scoped package)
+## [1.0.0] - 2025-10-12
+### 🔁 Scoped Migration Release
+This release aligns **polyfront-slider** with its scoped equivalent **@3nvs/polyfront-slider@1.0.0**.
+
+- The unscoped package is now a thin **shim** that re-exports the scoped library.  
+- No functional changes were introduced — all code, types, and exports come directly from **@3nvs/polyfront-slider**.  
+- Users can safely migrate:
+  ```bash
+  npm i @3nvs/polyfront-slider
 
 ---
 

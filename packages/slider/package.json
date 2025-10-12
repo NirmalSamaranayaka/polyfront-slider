@@ -78,7 +78,8 @@
     "changeset": "changeset",
     "version-packages": "changeset version && npm install",
     "release": "npm run build && npm publish --access public",
-    "prepublishOnly": "npm run typecheck && npm run build && npm test"
+    "prepublishOnly": "npm run typecheck && npm run build && npm test",
+    "prepack": "npm run build && node ../../scripts/generate-readmes.mjs"
   },
   "files": [
     "dist",

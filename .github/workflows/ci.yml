@@ -39,9 +39,10 @@ jobs:
         run: npm run build
 
       - name: 🎨 Build Storybook
+        if: matrix.os == 'ubuntu-latest' && matrix.node == 20
         run: npm run storybook:build
-
       - name: ⬆️ Upload Storybook artifact
+        if: matrix.os == 'ubuntu-latest' && matrix.node == 20
         uses: actions/upload-artifact@v4
         with:
           name: storybook-static
