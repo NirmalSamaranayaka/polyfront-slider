@@ -1,12 +1,13 @@
-# 🎛️ **polyfront-slider** (v0.0.2)
+# 🎛️ polyfront-slider (v0.0.3)
 
 [![npm version](https://img.shields.io/npm/v/polyfront-slider)](https://www.npmjs.com/package/polyfront-slider)
-[![license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](../../LICENSE)
 [![Storybook](https://img.shields.io/badge/Storybook-Live%20Demo-ff4785?logo=storybook)](https://nirmalsamaranayaka.github.io/polyfront-slider)
 [![CI](https://github.com/NirmalSamaranayaka/polyfront-slider/actions/workflows/ci.yml/badge.svg)](https://github.com/NirmalSamaranayaka/polyfront-slider/actions/workflows/ci.yml)
 
-> A modern, **TypeScript-based**, **framework-agnostic** Web Component slider — beautifully designed, mobile-first, accessible, and highly configurable.  
-> Built and maintained by [Nirmal Samaranayaka](mailto:nirmal.fullstack@gmail.com).
+> **Notice:**  
+> `polyfront-slider` is now a **shim** that re-exports [`@3nvs/polyfront-slider`](https://www.npmjs.com/package/@3nvs/polyfront-slider).  
+> It exists for backwards compatibility — there are **no API differences**.
 
 ---
 
@@ -36,6 +37,10 @@ It provides **enterprise-grade configurability**, **theming tokens**, **accessib
 ## 🧩 Installation
 
 ```bash
+# Scoped (recommended)
+npm install @3nvs/polyfront-slider
+
+# or use alias (unscoped)
 npm install polyfront-slider
 ```
 
@@ -45,7 +50,7 @@ npm install polyfront-slider
 
 ### 1️⃣ Register the component
 ```ts
-import { definePolyfrontSlider } from 'polyfront-slider';
+import { definePolyfrontSlider } from '@3nvs/polyfront-slider';
 definePolyfrontSlider();
 ```
 
@@ -122,7 +127,7 @@ npm run test
 
 Example:
 ```ts
-import { PolyfrontSlider } from 'polyfront-slider';
+import { PolyfrontSlider } from '@3nvs/polyfront-slider';
 
 const el = new PolyfrontSlider();
 el.setConfig({ min: 0, max: 100, step: 10, mode: 'range' });
@@ -173,19 +178,31 @@ dist/
 
 ```
 polyfront-slider/
+├─ dist/                            ← build output (from @3nvs/polyfront-slider)
 ├─ src/
 │  ├─ index.ts
 │  └─ polyfront-slider.ts
-├─ tests/
+├─ tests/                           ← Vitest tests
 │  └─ polyfront-slider.test.ts
-├─ stories/
+├─ stories/                          ← Storybook config
 │  └─ polyfront-slider.stories.ts
 ├─ .storybook/
-├─ .github/workflows/
+├─ .github/workflows/                ← CI workflows (ci.yml, storybook.yml, etc.)
 ├─ tsup.config.ts
 ├─ tsconfig.json
-├─ package.json
+├─ packages/                        ← workspace packages
+│  ├─ slider/                       ← canonical scoped package (@3nvs/polyfront-slider)
+│  │   ├─ CHANGELOG.md
+│  │   └─ package.json
+│  └─ slider-shim/                  ← unscoped alias (polyfront-slider)
+│      ├─ CHANGELOG.md
+│      ├─ index.cjs
+│      ├─ index.mjs
+│      ├─ index.d.ts
+│      └─ package.json
 ├─ LICENSE
+├─ .npmrc                           ← optional npm scope config
+└─ package.json                     ← workspace root (private)
 └─ README.md
 ```
 

@@ -3,6 +3,19 @@
 All notable changes to **polyfront-slider** are documented in this file.  
 This project follows [Semantic Versioning](https://semver.org/) and the [Keep a Changelog](https://keepachangelog.com/) style.
 
+
+---
+
+## [1.0.0] - 2025-10-12
+### 🔁 Scoped Migration Release
+This release aligns **polyfront-slider** with its scoped equivalent **@3nvs/polyfront-slider@1.0.0**.
+
+- The unscoped package is now a thin **shim** that re-exports the scoped library.  
+- No functional changes were introduced — all code, types, and exports come directly from **@3nvs/polyfront-slider**.  
+- Users can safely migrate:
+  ```bash
+  npm i @3nvs/polyfront-slider
+
 ---
 
 ## [0.0.2] - 2025-10-09

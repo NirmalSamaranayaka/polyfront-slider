@@ -1,0 +1,45 @@
+{
+  "name": "polyfront-slider",
+  "version": "1.0.0",
+  "description": "Shim that re-exports @3nvs/polyfront-slider",
+  "type": "module",
+  "main": "./index.cjs",
+  "module": "./index.mjs",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.cjs",
+      "types": "./index.d.ts"
+    }
+  },
+  "dependencies": {
+    "@3nvs/polyfront-slider": "1.0.0"
+  },
+  "sideEffects": false,
+  "files": [
+    "index.cjs",
+    "index.mjs",
+    "index.d.ts",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "package.json"
+  ],
+  "publishConfig": { "access": "public" },
+  "engines": { "node": ">=18.18.0" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NirmalSamaranayaka/polyfront-slider.git"
+  },
+  "homepage": "https://github.com/NirmalSamaranayaka/polyfront-slider#readme",
+  "bugs": { "url": "https://github.com/NirmalSamaranayaka/polyfront-slider/issues" },
+  "scripts": {
+    "build": "echo \"Shim has no build step\"",
+    "test": "node -e \"require('./index.cjs'); import('./index.mjs').then(()=>console.log('shim ok'))\"",
+    "storybook": "echo \"Shim uses the scoped package Storybook\"",
+    "build-storybook": "echo \"Shim uses the scoped package Storybook\"",
+    "prepack": "node ../../scripts/generate-readmes.mjs",
+    "release": "npm publish --access public"
+  }
+}

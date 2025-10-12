@@ -17,8 +17,8 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": [
-    "src",
-    "tests",
-    "stories"
+    "packages/slider/src",
+    "packages/slider/tests",
+    "packages/slider/stories"
   ]
 }

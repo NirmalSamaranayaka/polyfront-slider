@@ -2,8 +2,13 @@ name: Deploy Storybook
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   build-and-deploy:
@@ -14,14 +19,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: "npm"
 
-      - run: rm -rf node_modules package-lock.json
-      - run: npm config set optional true
-      - run: npm i
-      - run: npm run build-storybook
+      - name: Install
+        run: npm ci
+
+      - name: Build Storybook (scoped workspace)
+        run: npm run storybook:build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: storybook-static
+          # IMPORTANT: this is where Storybook actually lands
+          publish_dir: packages/slider/storybook-static
+          # optional but handy for first publish to keep history clean:
+          # force_orphan: true
