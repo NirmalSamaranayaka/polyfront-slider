@@ -1,27 +1,55 @@
-import fs from "fs";
-import path from "path";
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const root = path.resolve(process.cwd());
-const commonFile = path.join(root, "README.common.md");
-const scopedOut = path.join(root, "packages/slider/README.md");
-const unscopedOut = path.join(root, "packages/slider-shim/README.md");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const content = fs.readFileSync(commonFile, "utf8");
+// Repo root is the parent of /scripts
+const repoRoot = path.resolve(__dirname, '..');
 
-function extract(content, tag) {
-  const regex = new RegExp(`<!-- @${tag}:start -->([\\s\\S]*?)<!-- @${tag}:end -->`, "m");
-  const match = content.match(regex);
-  return match ? match[1].trim() : "";
+// Read the common README from repo root (not package CWD)
+const commonFile = path.join(repoRoot, 'README.common.md');
+
+// Output targets (scoped + unscoped)
+const scopedOut   = path.join(repoRoot, 'packages/slider/README.md');
+const unscopedOut = path.join(repoRoot, 'packages/slider-shim/README.md');
+
+// --- helpers ---
+function readFileSafe(p) {
+  if (!fs.existsSync(p)) {
+    throw new Error(`Missing file: ${p}`);
+  }
+  return fs.readFileSync(p, 'utf8');
 }
 
-const scopedHeader = extract(content, "SCOPE");
-const unscopedHeader = extract(content, "UNSCOPE");
+function extract(content, tag) {
+  const re = new RegExp(
+    `<!-- @${tag}:start -->([\\s\\S]*?)<!-- @${tag}:end -->`,
+    'm'
+  );
+  const m = content.match(re);
+  return m ? m[1].trim() : '';
+}
+
+const content = readFileSafe(commonFile);
+
+// Get scoped/unscoped headers
+const scopedHeader   = extract(content, 'SCOPE');
+const unscopedHeader = extract(content, 'UNSCOPE');
+
+// Strip the tagged blocks from the shared body
 const shared = content
-  .replace(/<!-- @SCOPE:[\s\S]*?@SCOPE:end -->/g, "")
-  .replace(/<!-- @UNSCOPE:[\s\S]*?@UNSCOPE:end -->/g, "")
+  .replace(/<!-- @SCOPE:start -->[\s\S]*?<!-- @SCOPE:end -->/g, '')
+  .replace(/<!-- @UNSCOPE:start -->[\s\S]*?<!-- @UNSCOPE:end -->/g, '')
   .trim();
 
-fs.writeFileSync(scopedOut, `${scopedHeader}\n\n${shared}`, "utf8");
-fs.writeFileSync(unscopedOut, `${unscopedHeader}\n\n${shared}`, "utf8");
+// Ensure target dirs exist (idempotent)
+fs.mkdirSync(path.dirname(scopedOut), { recursive: true });
+fs.mkdirSync(path.dirname(unscopedOut), { recursive: true });
 
-console.log("✅ Generated README files for scoped and unscoped packages.");
+// Write both READMEs
+fs.writeFileSync(scopedOut, `${scopedHeader}\n\n${shared}\n`, 'utf8');
+fs.writeFileSync(unscopedOut, `${unscopedHeader}\n\n${shared}\n`, 'utf8');
+
+console.log('✅ Generated README files for scoped and unscoped packages.');

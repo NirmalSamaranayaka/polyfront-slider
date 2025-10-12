@@ -9,11 +9,16 @@
     "typecheck": "npm -w @3nvs/polyfront-slider run typecheck",
     "storybook": "npm -w @3nvs/polyfront-slider run storybook",
     "storybook:build": "npm -w @3nvs/polyfront-slider run build-storybook",
+    "storybook:deploy": "npm run storybook:build && npx gh-pages -d packages/slider/storybook-static -m \"📘 publish storybook\"",
     "publish:scoped": "npm -w @3nvs/polyfront-slider run build && cd packages/slider && npm publish --access public",
     "publish:shim": "cd packages/slider-shim && npm publish --access public",
     "publish:all": "npm run publish:scoped && npm run publish:shim",
     "readmes:generate": "node scripts/generate-readmes.mjs",
     "prepublishOnly": "npm run readmes:generate && npm -w @3nvs/polyfront-slider run build && npm test",
     "verify": "npm run typecheck && npm run build && npm test && npm run storybook:build"
-  }
+  },
+ "devDependencies": {
+  "gh-pages": "^6.1.1"
+ }
+
 }
