@@ -34,17 +34,17 @@ if ((TEMPLATE as any).innerHTML !== undefined) {
         --pf-color-tick: oklch(0.64 0 0);
         --pf-color-tick-disabled: oklch(0.85 0 0);
         --pf-color-label: oklch(0.45 0 0);
-        --pf-color-tooltip-bg: oklch(0.23 0.02 255);
-        --pf-color-tooltip-fg: oklch(0.98 0 0);
+        --pf-color-tooltip-bg: oklch(0.15 0.05 255);
+        --pf-color-tooltip-fg: oklch(1 0 0);
         --pf-radius: 9999px;
         --pf-elev: 0 4px 12px rgba(0,0,0,0.12);
         --pf-track-size: 10px;
         --pf-thumb-size: 24px;
         --pf-tick-size: 6px;
         --pf-focus: 0 0 0 4px color-mix(in oklab, var(--pf-color-fill) 30%, transparent);
-        --pf-vpad-start: 12px; /* left padding in vertical */
-        --pf-vpad-end: 42px;   /* right padding (label column) */
-        --pf-vgap: 8px;        /* gap from track to tooltip/labels */
+        --pf-vpad-start: 10px;  /* left padding for tooltips */
+        --pf-vpad-end: 50px;    /* right padding for labels */
+        --pf-vgap: 12px;       /* gap from track to tooltip/labels */
 
         /* layout baseline (no forced height here) */
         display: inline-block;
@@ -138,18 +138,52 @@ if ((TEMPLATE as any).innerHTML !== undefined) {
       /* tooltips */
       .tooltip {
         position: absolute;
-        padding: 6px 8px;
+        padding: 8px 12px;
         border-radius: 8px;
-        font-size: 12px;
+        font-size: 13px;
+        font-weight: 600;
         background: var(--pf-color-tooltip-bg);
         color: var(--pf-color-tooltip-fg);
         pointer-events: none;
         box-shadow: var(--pf-elev);
+        white-space: nowrap;
+        z-index: 10;
+        transition: opacity 0.2s ease;
+        min-width: 32px;
+        text-align: center;
       }
-      :host([orientation="horizontal"]) .tooltip { transform: translate(-50%,-150%); }
+      :host([orientation="horizontal"]) .tooltip { 
+        transform: translate(-50%, -100%);
+        margin-top: -12px;
+      }
       :host([orientation="vertical"]) .tooltip {
-        left: calc(var(--pf-vpad-start) + var(--pf-track-size) + var(--pf-vgap));
-        transform: translate(0,-50%);
+        /* Position tooltips on the left side to avoid overlap */
+        left: calc(var(--pf-vpad-start) - 8px);
+        transform: translate(-100%, -50%);
+        margin-right: 8px;
+      }
+      
+      /* tooltip arrow */
+      .tooltip::before {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-style: solid;
+      }
+      :host([orientation="horizontal"]) .tooltip::before {
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 6px 6px 0 6px;
+        border-color: var(--pf-color-tooltip-bg) transparent transparent transparent;
+      }
+      :host([orientation="vertical"]) .tooltip::before {
+        right: -6px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-width: 6px 0 6px 6px;
+        border-color: transparent transparent transparent var(--pf-color-tooltip-bg);
       }
     </style>
     <div class="root">
@@ -785,11 +819,18 @@ attributeChangedCallback(name: string, oldValue: string | null, newValue: string
 
     // position tooltips: H sets left/top, V sets top only (left handled in CSS)
     if (this.cfg.orientation === 'horizontal') {
-      tip0.style.left = (ratio0 * 100) + '%'; tip0.style.top = '0%';
-      if (!t1.hidden) { tip1.style.left = (ratio1 * 100) + '%'; tip1.style.top = '0%'; }
+      tip0.style.left = (ratio0 * 100) + '%'; 
+      tip0.style.top = '25px'; // Much closer to thumb
+      if (!t1.hidden) { 
+        tip1.style.left = (ratio1 * 100) + '%'; 
+        tip1.style.top = '25px'; // Much closer to thumb
+      }
     } else {
+        // For vertical sliders, position tooltips on the left side
         tip0.style.top = (100 - ratio0 * 100) + '%';
-        if (!t1.hidden) tip1.style.top = (100 - ratio1 * 100) + '%';
+        if (!t1.hidden) {
+          tip1.style.top = (100 - ratio1 * 100) + '%';
+        }
     }
 
     this.renderTicksAndLabels();
@@ -847,4 +888,119 @@ export function definePolyfrontSlider(tag = 'polyfront-slider') {
   if (typeof customElements !== 'undefined' && !customElements.get(tag)) {
     customElements.define(tag, PolyfrontSlider);
   }
+}
+
+/**
+ * Helper function to create a slider with common configurations
+ * Makes it easier to use across different frameworks
+ */
+export function createSlider(config: PFSliderConfig = {}): PolyfrontSlider {
+  const slider = new PolyfrontSlider();
+  slider.setConfig(config);
+  return slider;
+}
+
+/**
+ * Helper function to create a horizontal range slider
+ */
+export function createRangeSlider(min: number, max: number, step: number = 1): PolyfrontSlider {
+  return createSlider({
+    mode: 'range',
+    orientation: 'horizontal',
+    min,
+    max,
+    step,
+    showTooltip: true,
+  });
+}
+
+/**
+ * Helper function to create a vertical volume control
+ */
+export function createVolumeControl(max: number = 100): PolyfrontSlider {
+  return createSlider({
+    mode: 'single',
+    orientation: 'vertical',
+    min: 0,
+    max,
+    step: 1,
+    showTicks: true,
+    tickEvery: 10,
+    showLabels: true,
+    showTooltip: true,
+    ariaLabel: 'Volume control',
+  });
+}
+
+/**
+ * Helper function to create a price range slider
+ */
+export function createPriceSlider(values: number[]): PolyfrontSlider {
+  return createSlider({
+    mode: 'range',
+    orientation: 'horizontal',
+    values,
+    showTicks: true,
+    showLabels: true,
+    showTooltip: true,
+    disableMissingSteps: true,
+    minThumbDistance: 1,
+    ariaLabel: 'Price range selector',
+  });
+}
+
+/**
+ * Helper function to create a discrete value slider (e.g., sizes, ratings)
+ */
+export function createDiscreteSlider(values: (string | number)[], mode: 'single' | 'range' = 'single'): PolyfrontSlider {
+  return createSlider({
+    mode,
+    orientation: 'horizontal',
+    values,
+    showTicks: true,
+    showLabels: true,
+    showTooltip: true,
+    disableMissingSteps: true,
+    output: 'value',
+  });
+}
+
+/**
+ * React-style props interface for easier integration
+ */
+export interface SliderProps extends PFSliderConfig {
+  onChange?: (value: any) => void;
+  onInput?: (value: any) => void;
+  className?: string;
+  style?: Record<string, string>;
+  id?: string;
+}
+
+/**
+ * Helper function to create a slider with React-style props
+ */
+export function createSliderWithProps(props: SliderProps): PolyfrontSlider {
+  const { onChange, onInput, className, style, id, ...config } = props;
+  
+  const slider = createSlider(config);
+  
+  if (id) slider.id = id;
+  if (className) slider.className = className;
+  if (style) {
+    Object.assign(slider.style, style);
+  }
+  
+  if (onChange) {
+    slider.addEventListener('polyfront-slider-change', (e: any) => {
+      onChange(e.detail.value);
+    });
+  }
+  
+  if (onInput) {
+    slider.addEventListener('polyfront-slider-input', (e: any) => {
+      onInput(e.detail.value);
+    });
+  }
+  
+  return slider;
 }

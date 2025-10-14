@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polyfront Slider - Usage Examples</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+        
+        .header p {
+            margin: 0;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .example {
+            margin-bottom: 40px;
+            padding: 24px;
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        
+        .example h3 {
+            margin: 0 0 16px 0;
+            color: #2c3e50;
+            font-size: 1.3rem;
+        }
+        
+        .example p {
+            margin: 0 0 16px 0;
+            color: #666;
+        }
+        
+        .slider-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80px;
+            margin: 16px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 16px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+        
+        .output {
+            background: #27ae60;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-family: monospace;
+            margin: 16px 0;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin: 24px 0;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .card h4 {
+            margin: 0 0 12px 0;
+            color: #2c3e50;
+        }
+        
+        .card p {
+            margin: 0 0 16px 0;
+            font-size: 12px;
+            color: #666;
+            font-family: monospace;
+            background: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎛️ Polyfront Slider</h1>
+            <p>Modern, accessible slider component for any frontend framework</p>
+        </div>
+        
+        <div class="content">
+            <div class="example">
+                <h3>🚀 Quick Start - Basic Range Slider</h3>
+                <p>Create a simple range slider with helper functions:</p>
+                <div class="code">
+// Import and register
+import { definePolyfrontSlider, createRangeSlider } from '@3nvs/polyfront-slider';
+definePolyfrontSlider();
+
+// Create slider
+const slider = createRangeSlider(0, 100, 5);
+document.body.appendChild(slider);
+                </div>
+                <div class="slider-container">
+                    <polyfront-slider id="basic-range"></polyfront-slider>
+                </div>
+                <div class="output" id="basic-output">Value: [0, 100]</div>
+            </div>
+
+            <div class="example">
+                <h3>🎵 Volume Control (Vertical)</h3>
+                <p>Perfect for audio controls and vertical sliders:</p>
+                <div class="code">
+import { createVolumeControl } from '@3nvs/polyfront-slider';
+
+const volumeControl = createVolumeControl(100);
+volumeControl.style.height = '200px';
+document.body.appendChild(volumeControl);
+                </div>
+                <div class="slider-container" style="min-height: 200px;">
+                    <polyfront-slider id="volume-control"></polyfront-slider>
+                </div>
+                <div class="output" id="volume-output">Volume: 50</div>
+            </div>
+
+            <div class="example">
+                <h3>💰 Price Range Slider</h3>
+                <p>Discrete values with blocked intervals for e-commerce:</p>
+                <div class="code">
+import { createPriceSlider } from '@3nvs/polyfront-slider';
+
+const priceSlider = createPriceSlider([0, 500, 1000, 1500, 2000, 2500, 3000]);
+document.body.appendChild(priceSlider);
+                </div>
+                <div class="slider-container">
+                    <polyfront-slider id="price-slider"></polyfront-slider>
+                </div>
+                <div class="output" id="price-output">Price Range: $0 - $3000</div>
+            </div>
+
+            <div class="example">
+                <h3>👕 Size Selector</h3>
+                <p>Discrete string values for product attributes:</p>
+                <div class="code">
+import { createDiscreteSlider } from '@3nvs/polyfront-slider';
+
+const sizeSlider = createDiscreteSlider(['XS', 'S', 'M', 'L', 'XL', 'XXL'], 'single');
+document.body.appendChild(sizeSlider);
+                </div>
+                <div class="slider-container">
+                    <polyfront-slider id="size-slider"></polyfront-slider>
+                </div>
+                <div class="output" id="size-output">Size: M</div>
+            </div>
+
+            <div class="example">
+                <h3>🎨 React-Style Props</h3>
+                <p>Easy integration with event handlers and styling:</p>
+                <div class="code">
+import { createSliderWithProps } from '@3nvs/polyfront-slider';
+
+const slider = createSliderWithProps({
+  mode: 'range',
+  min: 0,
+  max: 100,
+  step: 5,
+  showTooltip: true,
+  onChange: (value) => console.log('Changed:', value),
+  onInput: (value) => console.log('Input:', value),
+  style: { width: '100%', margin: '20px 0' }
+});
+document.body.appendChild(slider);
+                </div>
+                <div class="slider-container">
+                    <polyfront-slider id="react-style-slider"></polyfront-slider>
+                </div>
+                <div class="output" id="react-output">Range: [25, 75]</div>
+            </div>
+
+            <div class="example">
+                <h3>📱 Framework Integration Examples</h3>
+                <p>Ready-to-use examples for popular frameworks:</p>
+                
+                <div class="grid">
+                    <div class="card">
+                        <h4>React</h4>
+                        <p>useEffect + useRef pattern</p>
+                        <div class="code" style="font-size: 12px; padding: 8px;">
+function PriceSlider({ onChange }) {
+  const sliderRef = useRef(null);
+  
+  useEffect(() => {
+    const slider = createSliderWithProps({
+      mode: 'range',
+      min: 0, max: 2000, step: 100,
+      onChange: onChange
+    });
+    sliderRef.current.appendChild(slider);
+  }, [onChange]);
+  
+  return &lt;div ref={sliderRef} /&gt;;
+}
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>Vue 3</h4>
+                        <p>Composition API</p>
+                        <div class="code" style="font-size: 12px; padding: 8px;">
+&lt;template&gt;
+  &lt;div ref="container" /&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import { onMounted, ref } from 'vue';
+
+const container = ref();
+onMounted(() => {
+  const slider = createSliderWithProps({
+    mode: 'range',
+    onChange: (value) => emit('change', value)
+  });
+  container.value.appendChild(slider);
+});
+&lt;/script&gt;
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>Angular</h4>
+                        <p>Component lifecycle</p>
+                        <div class="code" style="font-size: 12px; padding: 8px;">
+@Component({
+  template: '&lt;div #container&gt;&lt;/div&gt;'
+})
+export class SliderComponent {
+  @ViewChild('container') container: ElementRef;
+  
+  ngOnInit() {
+    const slider = createSliderWithProps({
+      mode: 'range',
+      onChange: (value) => this.onChange(value)
+    });
+    this.container.nativeElement.appendChild(slider);
+  }
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { 
+            definePolyfrontSlider, 
+            createRangeSlider, 
+            createVolumeControl, 
+            createPriceSlider, 
+            createDiscreteSlider,
+            createSliderWithProps 
+        } from './dist/index.js';
+
+        // Register the component
+        definePolyfrontSlider();
+
+        // Initialize examples
+        document.addEventListener('DOMContentLoaded', () => {
+            // Basic range slider
+            const basicSlider = createRangeSlider(0, 100, 5);
+            basicSlider.addEventListener('polyfront-slider-change', (e) => {
+                document.getElementById('basic-output').textContent = `Value: [${e.detail.value.join(', ')}]`;
+            });
+            document.getElementById('basic-range').replaceWith(basicSlider);
+
+            // Volume control
+            const volumeSlider = createVolumeControl(100);
+            volumeSlider.style.height = '200px';
+            volumeSlider.style.width = '60px';
+            volumeSlider.addEventListener('polyfront-slider-change', (e) => {
+                document.getElementById('volume-output').textContent = `Volume: ${e.detail.value}`;
+            });
+            document.getElementById('volume-control').replaceWith(volumeSlider);
+
+            // Price slider
+            const priceSlider = createPriceSlider([0, 500, 1000, 1500, 2000, 2500, 3000]);
+            priceSlider.addEventListener('polyfront-slider-change', (e) => {
+                const [min, max] = e.detail.value;
+                document.getElementById('price-output').textContent = `Price Range: $${min} - $${max}`;
+            });
+            document.getElementById('price-slider').replaceWith(priceSlider);
+
+            // Size selector
+            const sizeSlider = createDiscreteSlider(['XS', 'S', 'M', 'L', 'XL', 'XXL'], 'single');
+            sizeSlider.addEventListener('polyfront-slider-change', (e) => {
+                document.getElementById('size-output').textContent = `Size: ${e.detail.value}`;
+            });
+            document.getElementById('size-slider').replaceWith(sizeSlider);
+
+            // React-style slider
+            const reactSlider = createSliderWithProps({
+                mode: 'range',
+                min: 0,
+                max: 100,
+                step: 5,
+                showTooltip: true,
+                onChange: (value) => {
+                    document.getElementById('react-output').textContent = `Range: [${value.join(', ')}]`;
+                },
+                style: { width: '100%' }
+            });
+            document.getElementById('react-style-slider').replaceWith(reactSlider);
+        });
+    </script>
+</body>
+</html>
