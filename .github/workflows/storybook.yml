@@ -1,27 +1,37 @@
-name: Deploy Storybook
+name: Publish
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: read
 
 jobs:
-  build-and-deploy:
+  publish-npm:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
 
-      - run: rm -rf node_modules package-lock.json
-      - run: npm config set optional true
-      - run: npm i
-      - run: npm run build-storybook
+      - name: Install
+        run: npm ci
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: storybook-static
+      - name: Build scoped package
+        run: npm run build
+
+      - name: Publish @3nvs/polyfront-slider
+        working-directory: packages/slider
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
+
+      - name: Publish polyfront-slider (shim)
+        working-directory: packages/slider-shim
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
