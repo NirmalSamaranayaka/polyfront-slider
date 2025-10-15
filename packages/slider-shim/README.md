@@ -1,4 +1,4 @@
-# 🎛️ polyfront-slider (v1.1.0)
+# 🎛️ polyfront-slider (v1.1.1)
 
 [![npm version](https://img.shields.io/npm/v/polyfront-slider)](https://www.npmjs.com/package/polyfront-slider)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](../../LICENSE)
