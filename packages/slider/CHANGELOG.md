@@ -3,6 +3,10 @@
 All notable changes to **@3nvs/polyfront-slider** are documented in this file.  
 This project follows [Semantic Versioning](https://semver.org/) and the [Keep a Changelog](https://keepachangelog.com/) style.
 
+---
+
+## [1.1.1] – 2025-10-15
+- Updating unscope npm keywords
 
 ---
 

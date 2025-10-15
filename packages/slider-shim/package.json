@@ -1,6 +1,6 @@
 {
   "name": "polyfront-slider",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Shim that re-exports @3nvs/polyfront-slider",
   "type": "module",
   "main": "./index.cjs",
@@ -14,7 +14,7 @@
     }
   },
   "dependencies": {
-    "@3nvs/polyfront-slider": "1.0.0"
+    "@3nvs/polyfront-slider": "1.1.1"
   },
   "sideEffects": false,
   "files": [
@@ -41,5 +41,37 @@
     "build-storybook": "echo \"Shim uses the scoped package Storybook\"",
     "prepack": "node ../../scripts/generate-readmes.mjs",
     "release": "npm publish --access public"
-  }
+  },
+  "keywords": [
+    "slider",
+    "range-slider",
+    "dual-thumb-slider",
+    "vertical-slider",
+    "horizontal-slider",
+    "discrete-slider",
+    "continuous-slider",
+    "web-components",
+    "custom-element",
+    "typescript",
+    "storybook",
+    "accessible",
+    "a11y",
+    "aria",
+    "keyboard-accessible",
+    "touch",
+    "pointer-events",
+    "ticks",
+    "labels",
+    "tooltip",
+    "blocked-intervals",
+    "min-thumb-distance",
+    "rtl",
+    "i18n",
+    "forms",
+    "form-associated",
+    "react-wrapper",
+    "vite",
+    "webpack",
+    "vitest"
+  ]
 }

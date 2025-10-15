@@ -1,6 +1,6 @@
 {
   "name": "@3nvs/polyfront-slider",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A modern, accessible TypeScript Web Component slider supporting horizontal, vertical, and range modes with ticks, labels, tooltips, and form integration.",
   "license": "MIT",
   "author": "Nirmal Samaranayaka <nirmal.fullstack@gmail.com>",
