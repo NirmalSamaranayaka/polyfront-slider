@@ -1,11 +1,3 @@
-# 🎛️ @3nvs/polyfront-slider (v1.1.2)
-
-[![npm (scoped)](https://img.shields.io/npm/v/%403nvs%2Fpolyfront-slider)](https://www.npmjs.com/package/@3nvs/polyfront-slider)
-[![license](https://img.shields.io/badge/license-MIT-blue.svg)](../../LICENSE)
-[![Storybook](https://img.shields.io/badge/Storybook-Live%20Demo-ff4785?logo=storybook)](https://nirmalsamaranayaka.github.io/polyfront-slider)
-[![CI](https://github.com/NirmalSamaranayaka/polyfront-slider/actions/workflows/ci.yml/badge.svg)](https://github.com/NirmalSamaranayaka/polyfront-slider/actions/workflows/ci.yml)
-
-> The **official scoped package** for the Polyfront Slider Web Component — built with TypeScript, accessible, framework-agnostic, and optimized for modern apps.
 
 ---
 

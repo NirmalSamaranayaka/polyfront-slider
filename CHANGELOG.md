@@ -5,6 +5,11 @@ This project follows [Semantic Versioning](https://semver.org/) and the [Keep a 
 
 ---
 
+## [1.1.2] – 2025-10-16
+- Update the generation of the root-level README file and relocate the changelog to the repository root
+
+---
+
 ## [1.1.1] – 2025-10-15
 - Updating unscope npm keywords
 
