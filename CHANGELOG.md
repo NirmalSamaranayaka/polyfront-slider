@@ -5,6 +5,10 @@ This project follows [Semantic Versioning](https://semver.org/) and the [Keep a 
 
 ---
 
+## [1.1.3] – 2025-10-17
+- Partially Disabled and Specific Range Blocked Slider – Horizontal and Vertical Representations (Storybook)
+---
+
 ## [1.1.2] – 2025-10-16
 - Update the generation of the root-level README file and relocate the changelog to the repository root
 

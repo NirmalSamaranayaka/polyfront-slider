@@ -134,7 +134,7 @@ export default meta;
 /* ------------------------------------------------------------ */
 /*  Story 1: Price Range Slider (Horizontal)                    */
 /* ------------------------------------------------------------ */
-export const PriceRangeSlider: StoryObj<Args> = {
+export const PartiallyDisabledSliderPriceRangeSlider: StoryObj<Args> = {
   args: {
     orientation: 'horizontal',
     mode: 'range',
@@ -143,7 +143,7 @@ export const PriceRangeSlider: StoryObj<Args> = {
     tickEvery: 1,
     showLabels: true,
     showTooltip: true,
-    values: [0, 1500, 1600, 1700, 1800, 1900, 2000],
+    values: [0, 100, 200, 300, 400, 500, 600, 1800, 2000],
     disableMissingSteps: true,
     blockedIntervals: [[1600, 1699]],
     minThumbDistance: 1,
@@ -156,9 +156,9 @@ export const PriceRangeSlider: StoryObj<Args> = {
 /* ------------------------------------------------------------ */
 /*  Story 2: Price Range Slider (Vertical)                      */
 /* ------------------------------------------------------------ */
-export const PriceRangeSliderVertical: StoryObj<Args> = {
+export const PartiallyDisabledPriceRangeSliderVertical: StoryObj<Args> = {
   args: {
-    ...PriceRangeSlider.args,
+    ...PartiallyDisabledSliderPriceRangeSlider.args,
     orientation: 'vertical',
   },
 };
