@@ -203,7 +203,7 @@ var st=Object.defineProperty;var ot=(l,d,t)=>d in l?st(l,d,{enumerable:!0,config
       background: white;
       border-radius: 8px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-    `;const s=document.createElement("polyfront-slider");return l.orientation==="vertical"?(s.style.height="320px",s.style.width="60px"):(s.style.width="100%",s.style.maxWidth="500px"),s.addEventListener("polyfront-slider-change",r=>{console.log("Slider value changed:",r.detail.value)}),e.appendChild(s),d.appendChild(t),d.appendChild(e),requestAnimationFrame(()=>s.setConfig(l)),d}},b={args:{orientation:"horizontal",mode:"range",size:"lg",showTicks:!0,tickEvery:1,showLabels:!0,showTooltip:!0,values:[0,1500,1600,1700,1800,1900,2e3],disableMissingSteps:!0,blockedIntervals:[[1600,1699]],minThumbDistance:1,ariaLabel:"Price range selector",ariaLabelLower:"Minimum price",ariaLabelUpper:"Maximum price"}},x={args:{...b.args,orientation:"vertical"}},g={args:{orientation:"horizontal",mode:"single",size:"md",showTicks:!1,showLabels:!1,showTooltip:!0,min:0,max:100,step:5,ariaLabel:"Volume control"}},v={args:{...g.args,orientation:"vertical",min:0,max:100,step:1,showTicks:!0,tickEvery:10,showLabels:!0}},y={args:{orientation:"horizontal",mode:"range",size:"md",showTicks:!0,tickEvery:5,showLabels:!0,showTooltip:!0,min:-10,max:40,step:1,minThumbDistance:2,ariaLabel:"Temperature range",ariaLabelLower:"Minimum temperature",ariaLabelUpper:"Maximum temperature"}},w={args:{orientation:"horizontal",mode:"single",size:"sm",showTicks:!0,showLabels:!1,showTooltip:!0,min:0,max:10,step:1}},k={args:{orientation:"horizontal",mode:"range",size:"md",showTicks:!0,showLabels:!0,showTooltip:!0,min:0,max:100,step:10,disabled:!0}},T={args:{orientation:"horizontal",mode:"range",size:"lg",showTicks:!0,showLabels:!0,showTooltip:!0,min:0,max:100,step:5,minThumbDistance:5},render:l=>{const d=document.createElement("div");d.style.cssText=`
+    `;const s=document.createElement("polyfront-slider");return l.orientation==="vertical"?(s.style.height="320px",s.style.width="60px"):(s.style.width="100%",s.style.maxWidth="500px"),s.addEventListener("polyfront-slider-change",r=>{console.log("Slider value changed:",r.detail.value)}),e.appendChild(s),d.appendChild(t),d.appendChild(e),requestAnimationFrame(()=>s.setConfig(l)),d}},b={args:{orientation:"horizontal",mode:"range",size:"lg",showTicks:!0,tickEvery:1,showLabels:!0,showTooltip:!0,values:[0,100,200,300,400,500,600,1800,2e3],disableMissingSteps:!0,blockedIntervals:[[1600,1699]],minThumbDistance:1,ariaLabel:"Price range selector",ariaLabelLower:"Minimum price",ariaLabelUpper:"Maximum price"}},x={args:{...b.args,orientation:"vertical"}},g={args:{orientation:"horizontal",mode:"single",size:"md",showTicks:!1,showLabels:!1,showTooltip:!0,min:0,max:100,step:5,ariaLabel:"Volume control"}},v={args:{...g.args,orientation:"vertical",min:0,max:100,step:1,showTicks:!0,tickEvery:10,showLabels:!0}},y={args:{orientation:"horizontal",mode:"range",size:"md",showTicks:!0,tickEvery:5,showLabels:!0,showTooltip:!0,min:-10,max:40,step:1,minThumbDistance:2,ariaLabel:"Temperature range",ariaLabelLower:"Minimum temperature",ariaLabelUpper:"Maximum temperature"}},w={args:{orientation:"horizontal",mode:"single",size:"sm",showTicks:!0,showLabels:!1,showTooltip:!0,min:0,max:10,step:1}},k={args:{orientation:"horizontal",mode:"range",size:"md",showTicks:!0,showLabels:!0,showTooltip:!0,min:0,max:100,step:10,disabled:!0}},T={args:{orientation:"horizontal",mode:"range",size:"lg",showTicks:!0,showLabels:!0,showTooltip:!0,min:0,max:100,step:5,minThumbDistance:5},render:l=>{const d=document.createElement("div");d.style.cssText=`
       width: 100%;
       max-width: 800px;
       padding: 32px;
@@ -326,7 +326,7 @@ var st=Object.defineProperty;var ot=(l,d,t)=>d in l?st(l,d,{enumerable:!0,config
     tickEvery: 1,
     showLabels: true,
     showTooltip: true,
-    values: [0, 1500, 1600, 1700, 1800, 1900, 2000],
+    values: [0, 100, 200, 300, 400, 500, 600, 1800, 2000],
     disableMissingSteps: true,
     blockedIntervals: [[1600, 1699]],
     minThumbDistance: 1,
@@ -336,7 +336,7 @@ var st=Object.defineProperty;var ot=(l,d,t)=>d in l?st(l,d,{enumerable:!0,config
   }
 }`,...(P=(A=b.parameters)==null?void 0:A.docs)==null?void 0:P.source}}};var R,N,F;x.parameters={...x.parameters,docs:{...(R=x.parameters)==null?void 0:R.docs,source:{originalSource:`{
   args: {
-    ...PriceRangeSlider.args,
+    ...PartiallyDisabledSliderPriceRangeSlider.args,
     orientation: 'vertical'
   }
 }`,...(F=(N=x.parameters)==null?void 0:N.docs)==null?void 0:F.source}}};var H,V,j;g.parameters={...g.parameters,docs:{...(H=g.parameters)==null?void 0:H.docs,source:{originalSource:`{
@@ -662,4 +662,4 @@ var st=Object.defineProperty;var ot=(l,d,t)=>d in l?st(l,d,{enumerable:!0,config
     container.appendChild(grid);
     return container;
   }
-}`,...(it=(et=C.parameters)==null?void 0:et.docs)==null?void 0:it.source}}};const mt=["PriceRangeSlider","PriceRangeSliderVertical","SimpleSingleSlider","VolumeControlVertical","TemperatureRange","SmallSizeSlider","DisabledSlider","FixedTooltips","HelperFunctionsDemo"];export{k as DisabledSlider,T as FixedTooltips,C as HelperFunctionsDemo,b as PriceRangeSlider,x as PriceRangeSliderVertical,g as SimpleSingleSlider,w as SmallSizeSlider,y as TemperatureRange,v as VolumeControlVertical,mt as __namedExportsOrder,ut as default};
+}`,...(it=(et=C.parameters)==null?void 0:et.docs)==null?void 0:it.source}}};const mt=["PartiallyDisabledSliderPriceRangeSlider","PartiallyDisabledPriceRangeSliderVertical","SimpleSingleSlider","VolumeControlVertical","TemperatureRange","SmallSizeSlider","DisabledSlider","FixedTooltips","HelperFunctionsDemo"];export{k as DisabledSlider,T as FixedTooltips,C as HelperFunctionsDemo,x as PartiallyDisabledPriceRangeSliderVertical,b as PartiallyDisabledSliderPriceRangeSlider,g as SimpleSingleSlider,w as SmallSizeSlider,y as TemperatureRange,v as VolumeControlVertical,mt as __namedExportsOrder,ut as default};
